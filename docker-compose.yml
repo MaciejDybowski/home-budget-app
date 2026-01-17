@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: budget-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: budgetdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  budget-app-backend:
+    image: ${REGISTRY_HOST:-localhost:5000}/budget-app-backend:latest
+    container_name: budget-backend
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/budgetdb?schema=public
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  budget-app-frontend:
+    image: ${REGISTRY_HOST:-localhost:5000}/budget-app-frontend:latest
+    container_name: budget-frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - budget-app-backend
+    restart: unless-stopped

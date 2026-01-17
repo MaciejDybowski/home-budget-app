@@ -1,0 +1,69 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id       String            @id @default(uuid())
+  name     String
+  color    String?
+  expenses Expense[]
+  patterns CategoryPattern[]
+}
+
+model CategoryPattern {
+  id         String   @id @default(uuid())
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  pattern    String
+}
+
+model IncomeSource {
+  id      String   @id @default(uuid())
+  name    String
+  color   String?
+  incomes Income[]
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  amount      Float
+  description String?
+  date        DateTime
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  createdAt   DateTime @default(now())
+}
+
+model Income {
+  id          String       @id @default(uuid())
+  amount      Float
+  description String?
+  date        DateTime
+  source      IncomeSource @relation(fields: [sourceId], references: [id])
+  sourceId    String
+  createdAt   DateTime     @default(now())
+}
+
+model MeterType {
+  id                   String         @id @default(uuid())
+  name                 String // np. "Prąd", "Woda zimna"
+  unit                 String // np. "kWh", "m³"
+  color                String?
+  expectedMonthlyUsage Float? // Założone miesięczne zużycie
+  readings             MeterReading[]
+}
+
+model MeterReading {
+  id          String    @id @default(uuid())
+  date        DateTime
+  value       Float // Wartość odczytu z licznika
+  meter       MeterType @relation(fields: [meterTypeId], references: [id])
+  meterTypeId String
+  createdAt   DateTime  @default(now())
+
+  @@index([meterTypeId, date])
+}
