@@ -124,11 +124,6 @@ Troubleshooting — common cases
 - Problem: missing dependencies
   - Run `npm install` in `budget-app` and `budget-app-backend`.
 
-Next steps / suggestions
-- Add screenshots to this README (place in `docs/` or `README_assets/`) and reference them from pages.
-- Provide example `.env` variations for production vs local.
-- Add CI job to build and push images to a real registry.
-
 Keywords (technologies)
 - TypeScript
 - JavaScript
